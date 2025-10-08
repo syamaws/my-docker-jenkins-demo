@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "syamks8/myflaskapp:1.0"              // Docker Hub image name
-        DOCKER_CREDENTIALS_ID = "dockerhub-creds"     // Jenkins DockerHub credentials ID
+        DOCKER_IMAGE = "syamks8/myflaskapp"        // Docker Hub image name (without tag)
+        DOCKER_CREDENTIALS_ID = "dockerhub-creds"  // Jenkins DockerHub credentials ID
     }
 
     stages {
@@ -18,6 +18,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Build with both build number and 'latest' tag
                     dockerImage = docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
                 }
             }
@@ -27,8 +28,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_CREDENTIALS_ID}") {
-                        dockerImage.push()
-                        dockerImage.push("latest")
+                        dockerImage.push()                // push BUILD_NUMBER tag
+                        dockerImage.push("latest")        // push latest tag
                     }
                 }
             }
@@ -38,10 +39,10 @@ pipeline {
             steps {
                 script {
                     // Stop and remove existing container (if any)
-                    sh "docker rm -f my-docker-demo || true"
+                    sh "docker rm -f my-flask-app || true"
 
                     // Run the new image
-                    sh "docker run -d -p 5000:5000 --name my-docker-demo ${DOCKER_IMAGE}:latest"
+                    sh "docker run -d -p 5000:5000 --name my-flask-app ${DOCKER_IMAGE}:latest"
                 }
             }
         }
@@ -56,3 +57,4 @@ pipeline {
         }
     }
 }
+
