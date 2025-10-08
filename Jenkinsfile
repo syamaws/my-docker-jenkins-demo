@@ -18,7 +18,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build with both build number and 'latest' tag
+                    // Build Docker image with BUILD_NUMBER tag
                     dockerImage = docker.build("${DOCKER_IMAGE}:${BUILD_NUMBER}")
                 }
             }
@@ -38,11 +38,17 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 script {
-                    // Stop and remove existing container (if any)
-                    sh "docker rm -f my-flask-app || true"
+                    // Use BUILD_NUMBER to make container name unique
+                    def containerName = "my-flask-app-${BUILD_NUMBER}"
 
-                    // Run the new image
-                    sh "docker run -d -p 5000:5000 --name my-flask-app ${DOCKER_IMAGE}:latest"
+                    // Stop and remove existing container with the same name (if any)
+                    sh "docker rm -f ${containerName} || true"
+
+                    // Run the new container
+                    sh "docker run -d -p 5000:5000 --name ${containerName} ${DOCKER_IMAGE}:latest"
+
+                    // Optional: Print container name for easy reference
+                    echo "Container running: ${containerName}"
                 }
             }
         }
@@ -57,4 +63,3 @@ pipeline {
         }
     }
 }
-
