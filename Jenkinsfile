@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "syamks8/mynginx"              // Docker Hub image name
+        DOCKER_IMAGE = "syamks8/myflaskapp:1.0"              // Docker Hub image name
         DOCKER_CREDENTIALS_ID = "dockerhub-creds"     // Jenkins DockerHub credentials ID
     }
 
