@@ -45,7 +45,7 @@ pipeline {
                     sh "docker rm -f ${containerName} || true"
 
                     // Run the new container
-                    sh "docker run -d -p 5000:5000 --name ${containerName} ${DOCKER_IMAGE}:latest"
+                    sh "docker run -d -p 5001:5001 --name ${containerName} ${DOCKER_IMAGE}:latest"
 
                     // Optional: Print container name for easy reference
                     echo "Container running: ${containerName}"
@@ -56,7 +56,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Deployment Successful! Visit http://<jenkins_server_ip>:5000"
+            echo "✅ Deployment Successful! Visit http://<jenkins_server_ip>:5001"
         }
         failure {
             echo "❌ Deployment Failed!"
