@@ -3,17 +3,17 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "your_dockerhub_username/my-docker-demo"  // Change this
+        DOCKER_IMAGE = "syamks8/mynginx"  // Change this
         DOCKER_CREDENTIALS_ID = "dockerhub-creds"  // ID from Jenkins Credentials
     }
 
-    stages {
-        stage('Checkout Code') {
-            steps {
-                git 'https://github.com/yourusername/my-docker-jenkins-demo.git'  // or your repo
-            }
-        }
-
+   stage('Checkout Code') {
+    steps {
+        git branch: 'main',
+            credentialsId: 'github-creds',
+            url: 'https://github.com/syamaws/my-docker-jenkins-demo.git'
+    }
+}
         stage('Build Docker Image') {
             steps {
                 script {
